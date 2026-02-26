@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Update sistem dan install dependencies
+# 1. Update sistem dan install semua dependencies yang diperlukan
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -19,18 +19,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# 3. Setting izin dasar
-RUN chown -R www-data:www-data /var/www/html
+# 3. Install dependensi dengan --no-scripts agar tidak error saat build
+# Ini adalah kunci untuk melewati error "package:discover"
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# 4. Install dependensi (Flag --no-scripts mencegah error saat build)
-RUN composer install --no-dev --optimize-autoloader --no-scripts \
-    && composer dump-autoload --optimize
-
-# 5. Konfigurasi Izin Storage & Cache
+# 4. Konfigurasi Izin & Apache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN a2enmod rewrite
-
-# 6. Arahkan root web ke folder public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80
