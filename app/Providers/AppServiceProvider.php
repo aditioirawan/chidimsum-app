@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Tambahkan blok ini untuk migrasi otomatis
+        // Log ini akan muncul di dashboard Render jika kodenya jalan
+        Log::info('--- AppServiceProvider boot dijalankan ---');
+
+        // Cek apakah tabel migrasi sudah ada, kalau belum, jalankan migrasi
+        // Ini akan memaksa database terbuat otomatis saat website dibuka
         if (!Schema::hasTable('migrations')) {
             Artisan::call('migrate --force');
         }
