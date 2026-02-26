@@ -1,22 +1,29 @@
 FROM php:8.2-apache
 
-# Install sistem pendukung
+# 1. Install sistem pendukung
 RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev zip unzip git
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libpq-dev \
+    zip \
+    unzip \
+    git
 
-# Install PHP extensions
+# 2. Install PHP extensions (PENTING: pdo_pgsql untuk Neon.tech)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql pgsql
 
-# Install Composer (ini kuncinya!)
+# 3. Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 COPY . .
 
-# Jalankan composer install biar folder vendor tercipta
+# 4. Install dependensi Laravel (Folder vendor akan tercipta di sini)
 RUN composer install --no-dev --optimize-autoloader
 
+# 5. Konfigurasi Izin dan Apache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
