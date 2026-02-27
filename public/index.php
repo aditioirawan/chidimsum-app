@@ -5,6 +5,13 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// --- TAMBAHAN: Bypass Permission Denied di Render ---
+// Memaksa view cache dan session tidak menulis ke folder storage yang dikunci
+if (is_writable('/tmp')) {
+    putenv('VIEW_COMPILED_PATH=/tmp');
+}
+// ----------------------------------------------------
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
