@@ -1,10 +1,7 @@
-#!/usr/bin/env bash
-export VIEW_COMPILED_PATH=/tmp
+#!/bin/sh
 
-php artisan config:clear
-php artisan cache:clear
-
-# Migrasi untuk produk dan sesi
+echo "Running Laravel migrations..."
 php artisan migrate --force
 
+echo "Starting Apache..."
 apache2-foreground
