@@ -8,15 +8,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
+# Install dependensi
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# PERBAIKAN Izin Folder (PENTING)
+# Berikan izin penuh pada storage dan cache agar tidak terjadi "Permission Denied"
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+
 RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Beri izin akses agar start.sh bisa jalan
+# Tambahkan start.sh yang sudah kita buat
 RUN chmod +x start.sh
-
 EXPOSE 80
 
-# Jalankan start.sh saat container menyala
 CMD ["./start.sh"]
