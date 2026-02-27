@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
-
-# Pastikan folder log dan cache bisa ditulis (Bypass permission denied)
-chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Bersihkan cache konfigurasi
+# Bersihkan cache agar tidak nyangkut
 php artisan config:clear
 php artisan cache:clear
 
-# Migrasi otomatis ke database Neon.tech
+# PERINTAH SAKTI: Ini yang akan buat tabel di Neon.tech
 php artisan migrate --force
 
-# Jalankan server
+# Nyalakan server
 apache2-foreground
