@@ -8,10 +8,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Install tanpa menjalankan script artisan (ini yang bikin build kamu gagal)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
+# Beri izin akses agar start.sh bisa jalan
+RUN chmod +x start.sh
+
 EXPOSE 80
+
+# Jalankan start.sh saat container menyala
+CMD ["./start.sh"]
