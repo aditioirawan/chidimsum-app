@@ -11,15 +11,12 @@ COPY . .
 # Install dependensi
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# PERBAIKAN Izin Folder (PENTING)
-# Berikan izin penuh pada storage dan cache agar tidak terjadi "Permission Denied"
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+# Tambahkan baris ini untuk memastikan folder storage bisa diakses
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 RUN a2enmod rewrite
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Tambahkan start.sh yang sudah kita buat
 RUN chmod +x start.sh
 EXPOSE 80
 
