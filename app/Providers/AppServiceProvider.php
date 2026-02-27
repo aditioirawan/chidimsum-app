@@ -7,21 +7,11 @@ use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void { }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Log ini saja yang kita simpan untuk memastikan kode terbaca
-        // Kita HAPUS perintah Artisan::call('migrate') agar aplikasi tidak crash
-        Log::info('--- AppServiceProvider boot dijalankan: Database migrasi dimatikan ---');
+        // KOSONGKAN SAJA agar aplikasi tidak pusing melakukan migrasi otomatis
+        Log::info('--- AppServiceProvider: Database logic disabled to prevent connection errors ---');
     }
 }
