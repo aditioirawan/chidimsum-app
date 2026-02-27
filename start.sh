@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-# Bersihkan cache agar tidak nyangkut
+
+# Paksa Laravel untuk menggunakan /tmp untuk menyimpan cache view (bypass permission denied)
+export VIEW_COMPILED_PATH=/tmp
+
+# Pastikan cache yang lama dihapus agar tidak konflik
+rm -rf storage/framework/views/*.php
+
+# Bersihkan cache Laravel
 php artisan config:clear
 php artisan cache:clear
 
-# PERINTAH SAKTI: Ini yang akan buat tabel di Neon.tech
+# Migrasi database
 php artisan migrate --force
 
-# Nyalakan server
+# Jalankan Apache
 apache2-foreground
